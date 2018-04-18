@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">bluetooth Setting</string>
+    <string name="title_connected_devices">Connected Devices</string>
+    <string name="title_paired_devices">My Devices</string>
+    <string name="title_other_devices">New</string>
+    <string name="str_bluetooth_connect">Bluetooth</string>
+    <string name="scaning">scaning</string>
+    <string name="btn_disconnect">Disconnect</string>
+    <string name="btn_connect">Connect</string>
 </resources>

@@ -140,7 +140,23 @@ public class BluetoothChatService {
         // Update UI title
 //        updateUserInterfaceTitle();
     }
+    public synchronized void connect(BluetoothDevice device, boolean secure, int position){
+        if(BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
+            return;
+        }
+        if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(device)){
+            Utils.toast(mContext, "Already Connected222!!");
+            return;
+        }
+        //여기서 무조건 insert 하는 구문으로 페어링 돼 있지만, 꺼져있는 기기에 대한 고려 없이 (성공 여부에 관계없이) insert
+        //connected 부분에 더블체크해야함(service 에서)
+        BluetoothDeviceData.deviceConnHashMap.put(device.getAddress(), new ConnectionThread(device, secure));
+        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setPaired_pos(position);
+        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).start();
 
+        // Update UI title
+//        updateUserInterfaceTitle();
+    }
     public synchronized  void disconnected(BluetoothDevice device, int position){
         if(!BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
             return;
@@ -334,6 +350,11 @@ public class BluetoothChatService {
         private final BluetoothDevice mmDevice;
         private String mSocketType;
 
+        int position;
+        int paired_pos;
+        boolean isConnected;
+        boolean dblChkConnected;
+
 
         public ConnectionThread(BluetoothDevice device, boolean secure) {
             mmDevice = device;
@@ -345,8 +366,14 @@ public class BluetoothChatService {
             try {
                 tmp = device.createInsecureRfcommSocketToServiceRecord(
                         MY_UUID_INSECURE);
-
+                if(BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
+                    BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setDblChkConnected(true);
+                }
             } catch (IOException e) {
+                BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setDblChkConnected(false);
+                if(BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
+                    BluetoothDeviceData.deviceConnHashMap.remove(device.getAddress());
+                }
                 Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
             }
             mmSocket = tmp;
@@ -356,7 +383,21 @@ public class BluetoothChatService {
 
         }
 
-        int position;
+        public boolean isDblChkConnected() {
+            return dblChkConnected;
+        }
+
+        public void setDblChkConnected(boolean dblChkConnected) {
+            this.dblChkConnected = dblChkConnected;
+        }
+
+        public boolean isConnected() {
+            return isConnected;
+        }
+
+        public void setConnected(boolean connected) {
+            isConnected = connected;
+        }
 
         public int getPosition() {
             return position;
@@ -364,6 +405,14 @@ public class BluetoothChatService {
 
         public void setPosition(int position) {
             this.position = position;
+        }
+
+        public int getPaired_pos() {
+            return paired_pos;
+        }
+
+        public void setPaired_pos(int paired_pos) {
+            this.paired_pos = paired_pos;
         }
 
         public void run() {

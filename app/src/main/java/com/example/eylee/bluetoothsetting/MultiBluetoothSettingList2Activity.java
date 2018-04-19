@@ -20,8 +20,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -158,7 +160,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
         super.onResume();
 
         //to do 모든 리스트 리셋하고 다시 그려야 함
-
+        resetListView();
         discoveryDevice();
         getDeviceList();
 
@@ -173,6 +175,33 @@ public class MultiBluetoothSettingList2Activity extends Activity{
                 BluetoothDeviceData.bluetoothChatService.start();
             }
         }
+    }
+
+    private void resetListView(){
+
+
+        if(BluetoothDeviceData.pairedItems != null && BluetoothDeviceData.pairedItems.size() > 0)
+            BluetoothDeviceData.pairedItems.clear();
+        if(BluetoothDeviceData.connectedItems != null && BluetoothDeviceData.connectedItems.size() > 0)
+            BluetoothDeviceData.connectedItems.clear();
+        if(BluetoothDeviceData.newDeviceItems != null && BluetoothDeviceData.newDeviceItems.size() > 0)
+            BluetoothDeviceData.newDeviceItems.clear();
+        Log.w(TAG, "resume!" + String.valueOf(BluetoothDeviceData.pairedItems.size() ));
+        Log.w(TAG, "resume!" + String.valueOf(BluetoothDeviceData.newDeviceItems.size()));
+
+        //connection 이 이루어진 ListView 먼저 갱신 시작
+        if(BluetoothDeviceData.deviceConnHashMap != null && BluetoothDeviceData.deviceConnHashMap.size() > 0){
+            Iterator<String> keysetIterator = BluetoothDeviceData.deviceConnHashMap.keySet().iterator();
+            while (keysetIterator.hasNext()) {
+                String key = keysetIterator.next();
+//                BluetoothChatService.ConnectionThread value = BluetoothDeviceData.deviceConnHashMap.get( key );\
+                BluetoothDevice device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(key);
+                BluetoothDeviceData.connectedItems.add(new ConnectedItem(null, device.getName(), device.getAddress()));
+            }
+            BluetoothDeviceData.connectedListBaseAdapter.notifyDataSetChanged();
+        }
+        //connection 이 이루어진 ListView 먼저 갱신 끝
+
     }
 
     private void discoveryDevice() {
@@ -227,10 +256,22 @@ public class MultiBluetoothSettingList2Activity extends Activity{
 
             for(BluetoothDevice device : pairedDevices){
 //                BluetoothDeviceData.mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-                BluetoothDeviceData.pairedItems.add(new ConnectedItem(null, device.getName()  + "\n" +  device.getAddress(),  device.getAddress()));
+//                BluetoothDeviceData.pairedItems.add(new ConnectedItem(null, device.getName()  + "\n" +  device.getAddress(),  device.getAddress()));
+
+                //먼저 connection 이 이루어진 기기인지 확인하고 add하기
+                if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
+                    // paired 된 기기 add
+                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), true));
+                }else{
+                    // paired 된 기기 add
+                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), false));
+                }
+
                 BluetoothDeviceData.pairedListBaseAdapter.notifyDataSetChanged();
 
             }
+
+
         }
         else{
 //            String noDevices = getResources().getText(R.string.none_paired).toString();
@@ -332,6 +373,9 @@ public class MultiBluetoothSettingList2Activity extends Activity{
             listViewNewDevices.setVisibility(View.VISIBLE);
         else if(listViewNewDevices.getVisibility()==View.VISIBLE)
             listViewNewDevices.setVisibility(View.GONE);
+
+        // 새로 주변에 기기 검색 해서listview update
+        onResume();
     }
 
     @Override
@@ -350,5 +394,19 @@ public class MultiBluetoothSettingList2Activity extends Activity{
         if(BluetoothDeviceData.bluetoothDeviceReceiver != null){
             BluetoothDeviceData.bluetoothDeviceReceiver = null;
         }
-    }
+        if(BluetoothDeviceData.pairedListBaseAdapter  != null){
+            BluetoothDeviceData.pairedListBaseAdapter  = null;
+            BluetoothDeviceData.pairedItems = null;
+        }
+        if(BluetoothDeviceData.connectedListBaseAdapter  != null){
+            BluetoothDeviceData.connectedListBaseAdapter  = null;
+            BluetoothDeviceData.connectedItems = null;
+        }
+
+        if(BluetoothDeviceData.newDeviceListBaseAdapter != null){
+            BluetoothDeviceData.newDeviceListBaseAdapter = null;
+            BluetoothDeviceData.newDeviceItems = null;
+        }
+
+    } // stopBluetoothService
 }

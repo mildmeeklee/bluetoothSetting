@@ -16,12 +16,12 @@ public class PairedListBaseAdapter extends BaseAdapter {
 
     private Context mContext;
 
-    private ArrayList<ConnectedItem> mItems;
+    private ArrayList<PairedItem> mItems;
     LayoutInflater inflter;
 
     private String TAG = this.getClass().getSimpleName();
 
-    PairedListBaseAdapter(Context mContext, ArrayList<ConnectedItem> connectedItemArrayList){
+    PairedListBaseAdapter(Context mContext, ArrayList<PairedItem> connectedItemArrayList){
         this.mContext = mContext;
         this.mItems = connectedItemArrayList;
         this.inflter = LayoutInflater.from(mContext);
@@ -42,6 +42,7 @@ public class PairedListBaseAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -56,6 +57,11 @@ public class PairedListBaseAdapter extends BaseAdapter {
 //        String address = info.substring(info.length() - 17);
         final  String _address = address;
 
+        if(mItems.get(position).isConnected()){
+            conBtn.setVisibility(View.INVISIBLE);
+        }else{
+            conBtn.setVisibility(View.VISIBLE);
+        }
         Log.i(TAG, "_address :: 클릭시 :: " + _address);
         conBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +72,7 @@ public class PairedListBaseAdapter extends BaseAdapter {
                 // Get the device MAC address, which is the last 17 chars in the View
                 String info = mItems.get(position).getDeviceNm();
 
-                connectDevice(_address, false);
+                connectDevice(_address, false, position);
 
             }
         });
@@ -102,16 +108,22 @@ public class PairedListBaseAdapter extends BaseAdapter {
     } //end of getView
 
 
-    private  void connectDevice(String addr, boolean secure){
+    private  void connectDevice(String addr, boolean secure, int position){
+
         if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
-            Utils.toast(mContext,"Already connected!!!!!!!");
-            return;
+            if(BluetoothDeviceData.deviceConnHashMap.get(addr).isConnected()){
+                Utils.toast(mContext,"Already connected!!!!!!!");
+                return;
+            }
+
         }
+
         // Get the device MAC address
         // Get the BluetoothDevice object
         BluetoothDevice device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(addr);
+
         // Attempt to connect to the device
-        BluetoothDeviceData.bluetoothChatService.connect(device, secure);
+        BluetoothDeviceData.bluetoothChatService.connect(device, secure, position);
 
 
 

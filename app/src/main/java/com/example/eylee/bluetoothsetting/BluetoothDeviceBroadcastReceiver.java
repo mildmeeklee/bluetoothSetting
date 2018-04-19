@@ -53,6 +53,22 @@ public class BluetoothDeviceBroadcastReceiver extends BroadcastReceiver {
                 if(BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
                     delPosition = BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).getPosition();
 //                    Utils.toast(context, "receiver :: device - "+device.getAddress());
+
+                    //paired 된 list 먼저 정리 시작
+                    BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setConnected(false);
+
+                    if(BluetoothDeviceData.pairedItems != null && BluetoothDeviceData.pairedItems.size() > 0){
+                        for(int conI = 0; conI < BluetoothDeviceData.pairedItems.size(); conI++){
+                            if( (BluetoothDeviceData.pairedItems.get(conI).getDeviceAddr()).equals(device.getAddress())){
+                                BluetoothDeviceData.pairedItems.get(conI).setConnected(false);
+                                break;
+                            }
+                        }
+                    }
+                    BluetoothDeviceData.pairedListBaseAdapter.notifyDataSetChanged();
+                    //paired 된 list 먼저 정리 끝
+
+
                     BluetoothDeviceData.deviceConnHashMap.remove(device.getAddress());
 
                     Message message = BluetoothDeviceData.bluetoothDeviceHandler.obtainMessage(BluetoothDeviceData.CONN_STATE_DISCONN);
@@ -97,6 +113,24 @@ public class BluetoothDeviceBroadcastReceiver extends BroadcastReceiver {
 
 
 //                        BluetoothDeviceData.connectedListBaseAdapter.add(new ConnectedItem(null, devicenm+ "\n" + deviceId));
+                        // 먼저 paired item 에서 버튼 disable 시키고
+                        if(BluetoothDeviceData.deviceConnHashMap.containsKey(deviceId)){
+                            BluetoothDeviceData.deviceConnHashMap.get(deviceId).setConnected(true);
+
+                            if(BluetoothDeviceData.pairedItems != null && BluetoothDeviceData.pairedItems.size() > 0){
+                                for(int conI = 0; conI < BluetoothDeviceData.pairedItems.size(); conI++){
+                                    if( (BluetoothDeviceData.pairedItems.get(conI).getDeviceAddr()).equals(deviceId)){
+                                        BluetoothDeviceData.pairedItems.get(conI).setConnected(true);
+                                        break;
+                                    }
+                                }
+                            }
+                            BluetoothDeviceData.pairedListBaseAdapter.notifyDataSetChanged();
+
+
+                        }
+
+                        // 다음에 connected item 에 추가
                         BluetoothDeviceData.connectedItems.add(new ConnectedItem(null, devicenm + "\n" + deviceId, deviceId));
                         BluetoothDeviceData.connectedListBaseAdapter.notifyDataSetChanged();
                         _device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(deviceId);

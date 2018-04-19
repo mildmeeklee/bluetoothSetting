@@ -8,6 +8,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
+import android.util.Pair;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -63,7 +64,8 @@ public class BluetoothDeviceData {
 
     public static ArrayList<ConnectedItem> connectedItems = new ArrayList<ConnectedItem>();
     public static ArrayList<ConnectedItem> newDeviceItems = new ArrayList<ConnectedItem>();
-    public static ArrayList<ConnectedItem> pairedItems = new ArrayList<ConnectedItem>();
+    public static ArrayList<PairedItem> pairedItems = new ArrayList<PairedItem>();
+//    public static ArrayList<ConnectedItem> pairedItems = new ArrayList<ConnectedItem>();
 
     public static ConnectedListBaseAdapter connectedListBaseAdapter;
     public static NewDeviceListBaseAdapter newDeviceListBaseAdapter;

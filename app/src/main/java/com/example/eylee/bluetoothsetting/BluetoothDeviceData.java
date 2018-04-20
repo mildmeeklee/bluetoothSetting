@@ -97,7 +97,7 @@ public class BluetoothDeviceData {
     public  static  final int CONN_STATE_CONNECTED = 23;
     public  static  final int CONN_STATE_PAIRED = 25;
     public static ConcurrentHashMap<String, BluetoothChatService.ConnectionThread> deviceConnHashMap = new ConcurrentHashMap<>();
-
+    public static ConcurrentHashMap<String, BluetoothChatService.ConnectionThread> deviceConnTryTempHashMap = new ConcurrentHashMap<>();
 	// print 버튼 눌렀을 때 array list 에 객체 저장
 //	public static  ArrayList<MyBluetoothDevice> bluetoothDevices = null;
     

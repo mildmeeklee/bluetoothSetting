@@ -82,7 +82,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
             startActivityForResult(enableIntent, BluetoothDeviceData.REQUEST_ENABLE_BT);
         }else if(BluetoothDeviceData.bluetoothChatService == null){
             setupChat();
-            Utils.toast(mContext,"setupChat!!");
+            ToastUtils.toast(mContext,"setupChat!!");
         }
     }
 
@@ -229,7 +229,6 @@ public class MultiBluetoothSettingList2Activity extends Activity{
 
     private void getDeviceList() {
 
-
 //        BluetoothDeviceData.mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.bluetooth_device_name_item);
 
         BluetoothDeviceData.pairedListBaseAdapter = new PairedListBaseAdapter(mContext, BluetoothDeviceData.pairedItems);
@@ -248,6 +247,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
 //        listViewPairedDevices.setOnItemClickListener(mDeviceClickListener);
 //        listViewNewDevices.setOnItemClickListener(mDeviceClickListener);
 
+
         //현재 paired 된 단말 리스트
         Set<BluetoothDevice> pairedDevices = BluetoothDeviceData.mBluetoothAdapter.getBondedDevices();
 
@@ -261,10 +261,10 @@ public class MultiBluetoothSettingList2Activity extends Activity{
                 //먼저 connection 이 이루어진 기기인지 확인하고 add하기
                 if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(device.getAddress())){
                     // paired 된 기기 add
-                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), true));
+                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), true, true));
                 }else{
                     // paired 된 기기 add
-                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), false));
+                    BluetoothDeviceData.pairedItems.add(new PairedItem(null, device.getName(),  device.getAddress(), false, false));
                 }
 
                 BluetoothDeviceData.pairedListBaseAdapter.notifyDataSetChanged();
@@ -277,6 +277,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
 //            String noDevices = getResources().getText(R.string.none_paired).toString();
 //            BluetoothDeviceData.mPairedDevicesArrayAdapter.add("none paired");
         }
+
     }
 
     @Override
@@ -284,7 +285,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == BluetoothDeviceData.REQUEST_ENABLE_BT){
-            Utils.toast(mContext, "REQUEST_ENABLE_BT");
+            ToastUtils.toast(mContext, "REQUEST_ENABLE_BT");
         }
     }
 
@@ -304,7 +305,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
 //            String noDevices = getResources().getText(R.string.none_paired).toString();
 //            String noNewDevice = getResources().getText(R.string.none_bluetooth_device_found).toString();
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             connectDevice(address, false);
         }
     };
@@ -315,7 +316,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
             String info = ((TextView) view).getText().toString();
             String address = info.substring(info.length() - 17);
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             disconnectDevice(address, position);
         }
     };
@@ -328,7 +329,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
     private void connectDevice(String addr, boolean secure) {
 
         if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
-            Utils.toast(mContext,"Already connected!!!!!!!");
+            ToastUtils.toast(mContext,"Already connected!!!!!!!");
             return;
         }
         // Get the device MAC address
@@ -343,7 +344,7 @@ public class MultiBluetoothSettingList2Activity extends Activity{
     private  void disconnectDevice(String addr, int position){
 
         if(BluetoothDeviceData.deviceConnHashMap.size() == 0 || !BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
-            Utils.toast(mContext,"Already disconnected!!!!!!!");
+            ToastUtils.toast(mContext,"Already disconnected!!!!!!!");
             return;
         }
         // Get the device MAC address
@@ -353,29 +354,35 @@ public class MultiBluetoothSettingList2Activity extends Activity{
         BluetoothDeviceData.bluetoothChatService.disconnected(device, position);
     }
     public void btn_tvConnectedDevices(View view){
-        if(listViewConnectedDevices.getVisibility()==View.GONE)
+        if(listViewConnectedDevices.getVisibility()==View.GONE){
             listViewConnectedDevices.setVisibility(View.VISIBLE);
+            onResume();
+        }
         else if(listViewConnectedDevices.getVisibility()==View.VISIBLE)
             listViewConnectedDevices.setVisibility(View.GONE);
 
     }
 
     public void btn_tvPairedDevices(View view){
-        if(listViewPairedDevices.getVisibility()==View.GONE)
+        if(listViewPairedDevices.getVisibility()==View.GONE){
             listViewPairedDevices.setVisibility(View.VISIBLE);
+            onResume();
+        }
         else if(listViewPairedDevices.getVisibility()==View.VISIBLE)
             listViewPairedDevices.setVisibility(View.GONE);
 
     }
 
     public void btn_tvNewDevices(View view){
-        if(listViewNewDevices.getVisibility()==View.GONE)
+        if(listViewNewDevices.getVisibility()==View.GONE){
             listViewNewDevices.setVisibility(View.VISIBLE);
-        else if(listViewNewDevices.getVisibility()==View.VISIBLE)
+            // 새로 주변에 기기 검색 해서listview update
+            onResume();
+        }
+        else if(listViewNewDevices.getVisibility()==View.VISIBLE){
             listViewNewDevices.setVisibility(View.GONE);
+        }
 
-        // 새로 주변에 기기 검색 해서listview update
-        onResume();
     }
 
     @Override

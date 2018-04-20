@@ -33,9 +33,9 @@ public class MainActivity extends Activity {
         switch (requestCode){
             case BLUETOOTH_REQUEST_CODE:{
                 if(requestCode == Activity.RESULT_OK){
-                    Utils.toast(this, "RESULT_OK !!!");
+                    ToastUtils.toast(this, "RESULT_OK !!!");
                 }else{
-                    Utils.toast(this, "RESULT_OK Not!!!");
+                    ToastUtils.toast(this, "RESULT_OK Not!!!");
                 }
                 break;
             }

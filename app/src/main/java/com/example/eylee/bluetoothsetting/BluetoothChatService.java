@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -145,14 +146,18 @@ public class BluetoothChatService {
             return;
         }
         if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(device)){
-            Utils.toast(mContext, "Already Connected222!!");
+            ToastUtils.toast(mContext, "Already Connected222!!");
             return;
         }
         //여기서 무조건 insert 하는 구문으로 페어링 돼 있지만, 꺼져있는 기기에 대한 고려 없이 (성공 여부에 관계없이) insert
         //connected 부분에 더블체크해야함(service 에서)
-        BluetoothDeviceData.deviceConnHashMap.put(device.getAddress(), new ConnectionThread(device, secure));
-        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setPaired_pos(position);
-        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).start();
+        BluetoothDeviceData.deviceConnTryTempHashMap.put(device.getAddress(), new ConnectionThread(device, secure));
+        BluetoothDeviceData.deviceConnTryTempHashMap.get(device.getAddress()).setPaired_pos(position);
+        BluetoothDeviceData.deviceConnTryTempHashMap.get(device.getAddress()).start();
+
+//        BluetoothDeviceData.deviceConnHashMap.put(device.getAddress(), new ConnectionThread(device, secure));
+//        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).setPaired_pos(position);
+//        BluetoothDeviceData.deviceConnHashMap.get(device.getAddress()).start();
 
         // Update UI title
 //        updateUserInterfaceTitle();
@@ -351,10 +356,10 @@ public class BluetoothChatService {
         private String mSocketType;
 
         int position;
-        int paired_pos;
+
         boolean isConnected;
         boolean dblChkConnected;
-
+        int paired_pos;
 
         public ConnectionThread(BluetoothDevice device, boolean secure) {
             mmDevice = device;
@@ -414,6 +419,7 @@ public class BluetoothChatService {
         public void setPaired_pos(int paired_pos) {
             this.paired_pos = paired_pos;
         }
+
 
         public void run() {
             Log.i(TAG, "BEGIN mConnectThread SocketType:" + mSocketType);

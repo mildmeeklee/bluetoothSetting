@@ -63,9 +63,9 @@ public class ConnectedListBaseAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try{
-                    Utils.toast(mContext,"hih disconn" + mItems.get(position).getDeviceNm());
+                    ToastUtils.toast(mContext,"hih disconn" + mItems.get(position).getDeviceNm());
 
-                    Utils.toast(mContext, "address :: 클릭시 :: " + _address);
+                    ToastUtils.toast(mContext, "address :: 클릭시 :: " + _address);
                     disconnectDevice(_address, position);
                 }catch (Exception e){
                     Log.e(TAG, e.toString());
@@ -108,7 +108,7 @@ public class ConnectedListBaseAdapter extends BaseAdapter {
     private  void disconnectDevice(String addr, int position){
 
         if(BluetoothDeviceData.connectedItems.size() == 0 ){
-            Utils.toast(mContext,"No Connected Device!!!!!!");
+            ToastUtils.toast(mContext,"No Connected Device!!!!!!");
             return;
         }
         Boolean isContains =false;
@@ -119,13 +119,13 @@ public class ConnectedListBaseAdapter extends BaseAdapter {
                 // Get the BluetoothDevice object
                 BluetoothDevice device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(addr);
                 // Attempt to connect to the device
-                Utils.toast(mContext,"Disconnect device :: "+device);
+                ToastUtils.toast(mContext,"Disconnect device :: "+device);
                 BluetoothDeviceData.bluetoothChatService.disconnected(device, position);
                 return;
             }
         }
         if(!isContains){
-            Utils.toast(mContext,"Already disconnected!!!!!!!");
+            ToastUtils.toast(mContext,"Already disconnected!!!!!!!");
             return;
         }
 

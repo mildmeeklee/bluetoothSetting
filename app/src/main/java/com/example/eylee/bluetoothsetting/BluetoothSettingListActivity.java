@@ -78,7 +78,7 @@ public class BluetoothSettingListActivity extends Activity{
             startActivityForResult(enableIntent, BluetoothDeviceData.REQUEST_ENABLE_BT);
         }else if(BluetoothDeviceData.bluetoothChatService == null){
             setupChat();
-            Utils.toast(mContext,"setupChat!!");
+            ToastUtils.toast(mContext,"setupChat!!");
         }
     }
 
@@ -218,7 +218,7 @@ public class BluetoothSettingListActivity extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == BluetoothDeviceData.REQUEST_ENABLE_BT){
-            Utils.toast(mContext, "REQUEST_ENABLE_BT");
+            ToastUtils.toast(mContext, "REQUEST_ENABLE_BT");
         }
     }
 
@@ -238,7 +238,7 @@ public class BluetoothSettingListActivity extends Activity{
 //            String noDevices = getResources().getText(R.string.none_paired).toString();
 //            String noNewDevice = getResources().getText(R.string.none_bluetooth_device_found).toString();
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             connectDevice(address, false);
         }
     };
@@ -249,7 +249,7 @@ public class BluetoothSettingListActivity extends Activity{
             String info = ((TextView) view).getText().toString();
             String address = info.substring(info.length() - 17);
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             disconnectDevice(address, position);
         }
     };

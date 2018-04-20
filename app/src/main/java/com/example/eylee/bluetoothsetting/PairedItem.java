@@ -7,12 +7,22 @@ public class PairedItem {
     private String deviceNm;
     private String deviceAddr;
     private boolean isConnected;
+    private boolean isDiscovery;
 
-    public PairedItem(Drawable mIcon, String deviceNm, String deviceAddr, boolean isConnected){
+    PairedItem(Drawable mIcon, String deviceNm, String deviceAddr, boolean isConnected, boolean isDiscovery){
         this.mIcon = mIcon;
         this.deviceNm = deviceNm;
         this.deviceAddr = deviceAddr;
         this.isConnected = isConnected;
+        this.isDiscovery = isDiscovery;
+    }
+
+    public boolean isDiscovery() {
+        return isDiscovery;
+    }
+
+    public void setDiscovery(boolean discovery) {
+        isDiscovery = discovery;
     }
 
     public boolean isConnected() {

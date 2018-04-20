@@ -3,7 +3,7 @@ package com.example.eylee.bluetoothsetting;
 import android.content.Context;
 import android.widget.Toast;
 
-public class Utils {
+public class ToastUtils {
 
     private static Toast toast;
 

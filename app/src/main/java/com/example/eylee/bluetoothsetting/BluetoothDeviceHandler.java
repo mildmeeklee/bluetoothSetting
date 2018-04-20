@@ -36,12 +36,12 @@ public class BluetoothDeviceHandler extends Handler {
                     int delConi=-1;
                     for(int conI = 0; conI < BluetoothDeviceData.connectedItems.size(); conI++){
                         if( (BluetoothDeviceData.connectedItems.get(conI).getDeviceAddr()).equals(connectedAddr)){
-                            Utils.toast(context, "hey connectedItems.get(conI) " +connectedAddr);
+                            ToastUtils.toast(context, "hey connectedItems.get(conI) " +connectedAddr);
                             delConi = conI;
                             break;
                         }
                     }
-                    Utils.toast(context, "hey CONN_STATE_DISCONN2 delConi "+ String.valueOf(delConi));
+                    ToastUtils.toast(context, "hey CONN_STATE_DISCONN2 delConi "+ String.valueOf(delConi));
                     if(delConi > -1){
 //                        BluetoothDeviceData.connectedItems.remove(BluetoothDeviceData.connectedListBaseAdapter.getItem(delPos));
                         BluetoothDeviceData.connectedItems.remove(delConi);
@@ -51,16 +51,16 @@ public class BluetoothDeviceHandler extends Handler {
                 }
                 break;
             case BluetoothDeviceData.MESSAGE_CONNECTED:
-                Utils.toast(context, "hey");
+                ToastUtils.toast(context, "hey");
                 break;
             case BluetoothDeviceData.PRINTER_COMMAND_ERROR:
-                Utils.toast(context, "Please select the correct printer instructions");
+                ToastUtils.toast(context, "Please select the correct printer instructions");
                 break;
             case BluetoothDeviceData.CONN_PRINTER:
-                Utils.toast(context, "Please connect the printer first");
+                ToastUtils.toast(context, "Please connect the printer first");
                 break;
             case BluetoothDeviceData.CONN_STATE_PAIRED:
-                Utils.toast(context, "CONN_STATE_PAIRED");
+                ToastUtils.toast(context, "CONN_STATE_PAIRED");
                 break;
             default:
                 break;

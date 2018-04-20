@@ -78,7 +78,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
             startActivityForResult(enableIntent, BluetoothDeviceData.REQUEST_ENABLE_BT);
         }else if(BluetoothDeviceData.bluetoothChatService == null){
             setupChat();
-            Utils.toast(mContext,"setupChat!!");
+            ToastUtils.toast(mContext,"setupChat!!");
         }
     }
 
@@ -218,7 +218,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == BluetoothDeviceData.REQUEST_ENABLE_BT){
-            Utils.toast(mContext, "REQUEST_ENABLE_BT");
+            ToastUtils.toast(mContext, "REQUEST_ENABLE_BT");
         }
     }
 
@@ -238,7 +238,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
 //            String noDevices = getResources().getText(R.string.none_paired).toString();
 //            String noNewDevice = getResources().getText(R.string.none_bluetooth_device_found).toString();
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             connectDevice(address, false);
         }
     };
@@ -249,7 +249,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
             String info = ((TextView) view).getText().toString();
             String address = info.substring(info.length() - 17);
             Log.i(TAG, "info :: 클릭시 :: " + info);
-            Utils.toast(mContext, "address :: 클릭시 :: " + address);
+            ToastUtils.toast(mContext, "address :: 클릭시 :: " + address);
             disconnectDevice(address, position);
         }
     };
@@ -262,7 +262,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
     private void connectDevice(String addr, boolean secure) {
 
         if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
-            Utils.toast(mContext,"Already connected!!!!!!!");
+            ToastUtils.toast(mContext,"Already connected!!!!!!!");
             return;
         }
         // Get the device MAC address
@@ -277,7 +277,7 @@ public class MultiBluetoothSettingListActivity extends Activity{
     private  void disconnectDevice(String addr, int position){
 
         if(BluetoothDeviceData.deviceConnHashMap.size() == 0 || !BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
-            Utils.toast(mContext,"Already disconnected!!!!!!!");
+            ToastUtils.toast(mContext,"Already disconnected!!!!!!!");
             return;
         }
         // Get the device MAC address

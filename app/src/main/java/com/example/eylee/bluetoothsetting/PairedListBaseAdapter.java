@@ -2,6 +2,7 @@ package com.example.eylee.bluetoothsetting;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,15 +54,25 @@ public class PairedListBaseAdapter extends BaseAdapter {
         tvNm.setText(mItems.get(position).getDeviceNm());
         tvAddr.setText(mItems.get(position).getDeviceAddr());
         Button conBtn = (Button) convertView.findViewById(R.id.con_paired_button);
+
+        if( mItems.get(position).isDiscovery()){
+            tvNm.setTextColor(Color.parseColor("#000000"));
+//            conBtn.setVisibility(View.VISIBLE);
+            if(mItems.get(position).isConnected()){
+                conBtn.setVisibility(View.INVISIBLE);
+            }else{
+                conBtn.setVisibility(View.VISIBLE);
+            }
+        }else{
+//            tvNm.setTextColor(Color.parseColor("#646362"));
+            tvNm.setTextColor(Color.parseColor("#87f0f4"));
+            conBtn.setVisibility(View.INVISIBLE);
+        }
         String address = tvAddr.getText().toString();
 //        String address = info.substring(info.length() - 17);
         final  String _address = address;
 
-        if(mItems.get(position).isConnected()){
-            conBtn.setVisibility(View.INVISIBLE);
-        }else{
-            conBtn.setVisibility(View.VISIBLE);
-        }
+
         Log.i(TAG, "_address :: 클릭시 :: " + _address);
         conBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,13 +121,22 @@ public class PairedListBaseAdapter extends BaseAdapter {
 
     private  void connectDevice(String addr, boolean secure, int position){
 
+        /**
+        if(BluetoothDeviceData.deviceConnTryTempHashMap.size() > 0 && BluetoothDeviceData.deviceConnTryTempHashMap.containsKey(addr)){
+
+                Utils.toast(mContext,"Try to connected..");
+                return;
+        }
+         */
+
         if(BluetoothDeviceData.deviceConnHashMap.size() > 0 && BluetoothDeviceData.deviceConnHashMap.containsKey(addr)){
             if(BluetoothDeviceData.deviceConnHashMap.get(addr).isConnected()){
-                Utils.toast(mContext,"Already connected!!!!!!!");
+                ToastUtils.toast(mContext,"Already connected!!!!!!!");
                 return;
             }
 
         }
+
 
         // Get the device MAC address
         // Get the BluetoothDevice object

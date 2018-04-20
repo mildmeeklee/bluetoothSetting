@@ -66,9 +66,9 @@ public class NewDeviceListBaseAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try{
-                    Utils.toast(mContext,"hih disconn" + mItems.get(position).getDeviceNm());
+                    ToastUtils.toast(mContext,"hih disconn" + mItems.get(position).getDeviceNm());
 
-                    Utils.toast(mContext, "address :: 클릭시 :: " + _address);
+                    ToastUtils.toast(mContext, "address :: 클릭시 :: " + _address);
                     paringDevice(_address, position);
                 }catch (Exception e){
                     Log.e(TAG, e.toString());
@@ -136,13 +136,13 @@ public class NewDeviceListBaseAdapter extends BaseAdapter {
     private  void paringDevice(String addr, int position){
 //        http://allstuffon.blogspot.com/2015/03/how-to-programmatically-pair-bluetooth.html
 //        https://www.programcreek.com/java-api-examples/?class=android.bluetooth.BluetoothDevice&method=ACTION_PAIRING_REQUEST
-        Utils.toast(mContext,"paringDevice Device!!!!!!");
+        ToastUtils.toast(mContext,"paringDevice Device!!!!!!");
         BluetoothDevice device = BluetoothDeviceData.mBluetoothAdapter.getRemoteDevice(addr);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
             device.createBond();
         }else{
-            Utils.toast(mContext,"paringDevice Device!!!!!!");
+            ToastUtils.toast(mContext,"paringDevice Device!!!!!!");
         }
 
         /*
